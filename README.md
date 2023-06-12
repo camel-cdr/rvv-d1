@@ -1,10 +1,10 @@
 # Enabling rvv on Allwinner D1/C906 Linux
 
 
-Thanks to brucehoult's comments on [my reddit post](https://www.reddit.com/r/RISCV/comments/13ik3xa/linux_image_for_allwinner_d1_with_vector/), I finally figured out how to enable the vector extension on the Allwinner D1.
+Thanks to brucehoult's comments on [my reddit post](https://old.reddit.com/r/RISCV/comments/13ik3xa/linux_image_for_allwinner_d1_with_vector/), I finally figured out how to enable the vector extension on the Allwinner D1.
 
-It's actually really simple, you just need to set `sstatus.VS` to `11` in supervisor mode.
-But what took me a while to figure out is, that the `sstatus.VS=11` mask doesn't have the value 0x600, as it does in the ratified spec, but rather, 0x1800000.
+It's actually really simple, you just need to set `sstatus.VS` to `1` in supervisor mode.
+But what took me a while to figure out is, that the `sstatus.VS=1` mask doesn't have the value `0x600`, as it does in the ratified spec, but rather, `0x1800000`.
 I only figured this out by the power of open source, and looking at the [C906 Verilog code](https://github.com/T-head-Semi/openc906/blob/bd92068b14321fc219a22d5c6108f9adc8315d54/C906_RTL_FACTORY/gen_rtl/cp0/rtl/aq_cp0_trap_csr.v#L478).
 
 
@@ -18,7 +18,7 @@ csrs	0x100, t0  # CSR_STATUS
 ret
 ```
 
-A basic kernel module that implements this is included in [./modules/](./modules/), you can use it as follows:
+A basic kernel module that implements this is included in [./module/](./module/), you can use it as follows:
 
 ```sh
 cd module
@@ -37,7 +37,7 @@ Such a location isn't trivial to find, because you need to have enough redundant
 
 So, after a lot of trial and error I found a suitable location:
 
-```
+```c
 void start_thread(struct pt_regs *regs, unsigned long pc,
 	unsigned long sp)
 {
@@ -70,23 +70,23 @@ Here is the end of the generated assembly:
 
 ```asm
 sd	a5,256(s1) # 23b0f410 (this stores into regs->status)
-ld	ra,40(sp)  #     a270
-ld	s0,32(sp)  #     0274
-ld	s1,24(sp)  #     e264
-ld	s2,16(sp)  #     4269
-ld	s3,8(sp)   #     a269
-add	sp,sp,48   #     4561
-li	a0,0       #     0145
-li	a1,0       #     8145
-li	a2,0       #     0146
-li	a3,0       #     8146
-li	a4,0       #     0147
-li	a5,0       #     8147
-ret                #     8280
-li	a5,1       #     8547
-sll	a5,a5,0x21 #     8617
+ld	ra,40(sp)  # a270
+ld	s0,32(sp)  # 0274
+ld	s1,24(sp)  # e264
+ld	s2,16(sp)  # 4269
+ld	s3,8(sp)   # a269
+add	sp,sp,48   # 4561
+li	a0,0       # 0145
+li	a1,0       # 8145
+li	a2,0       # 0146
+li	a3,0       # 8146
+li	a4,0       # 0147
+li	a5,0       # 8147
+ret                # 8280
+li	a5,1       # 8547
+sll	a5,a5,0x21 # 8617
 add	a5,a5,32   # 93870702
-j	0x 40d2    #     c9bf
+j	0x 40d2    # c9bf
 # 23b0f410a2700274e2644269a269456101458145014681460147814782808547861793870702c9bf
 ```
 
