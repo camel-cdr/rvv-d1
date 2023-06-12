@@ -2,10 +2,10 @@
 .text
 .balign 4
 
-// This works for the current MangoPi MQ-Pro ubuntu server gcc version.
-// Uncomment the following include, if you have the proper gcc 0.7.1
-// toochain (https://github.com/brucehoult/riscv-gnu-toolchain)
-//#include "rvv-rollback.S"
+# This works for the current MangoPi MQ-Pro ubuntu server gcc version.
+# Uncomment the following include, if you have the proper gcc 0.7.1
+# toochain (https://github.com/brucehoult/riscv-gnu-toolchain)
+# #include "rvv-rollback.S"
 
 .global rvv_memcpy
 rvv_memcpy: # void *_(void* dest, const void* src, size_t n)
