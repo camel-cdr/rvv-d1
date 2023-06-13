@@ -35,6 +35,8 @@ Using rvv in kernel space isn't all that great, and since I couldn't figure out 
 The idea is to find a place where `sstatus` is set in the kernel and add the `SR_VS|SR_FS` options to that.
 Such a location isn't trivial to find, because you need to have enough redundant bytes, that you can insert a potentially slightly larger load immediate or other extra instructions.
 
+Note, that this approach doesn't work with context switches across cpu cores (hearts). I don't have such hardware at hand, but I suspect, that you'd need to run your rvv application with `taskset -n x`.
+
 So, after a lot of trial and error I found a suitable location:
 
 ```c
