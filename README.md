@@ -4,7 +4,7 @@
 Thanks to brucehoult's comments on [my reddit post](https://old.reddit.com/r/RISCV/comments/13ik3xa/linux_image_for_allwinner_d1_with_vector/), I finally figured out how to enable the vector extension on the Allwinner D1.
 
 It's actually really simple, you just need to set `sstatus.VS` to `1` in supervisor mode.
-But what took me a while to figure out is, that the `sstatus.VS=1` mask doesn't have the value `0x600`, as it does in the ratified spec, but rather, `0x1800000`.
+But what took me a while to figure out is, that the `sstatus.VS=1` mask doesn't have the value `0x600` on the D1, as it does in the ratified spec, but rather, `0x1800000`.
 I only figured this out by the power of open source, and looking at the [C906 Verilog code](https://github.com/T-head-Semi/openc906/blob/bd92068b14321fc219a22d5c6108f9adc8315d54/C906_RTL_FACTORY/gen_rtl/cp0/rtl/aq_cp0_trap_csr.v#L478).
 
 
