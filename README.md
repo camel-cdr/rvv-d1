@@ -68,7 +68,7 @@ void start_thread(struct pt_regs *regs, unsigned long pc,
 
 This sets up the initial value of `regs->status`, which is later loaded by `restore_all`, which returns from supervisor to user mode.
 
-Here is the end of the generated assembly:
+Here is the end of the generated assembly, you can generate the dissasembly using `objdump -b binary -m riscv:rv64 -D`:
 
 ```asm
 sd	a5,256(s1) # 23b0f410 (this stores into regs->status)
@@ -150,4 +150,24 @@ I used the following to verify that everything was replaced correctly:
 
 ```sh
 dhex /boot/vmlinuz-5.19.0-1009-allwinner*
+```
+
+## Extra, enable `rdcycle`
+
+For some reason, `rdcycle` always returned the same value for me, so after reading up on it, I came to the conclusion that `mcountinhibit` probably disables it.
+After a bit of digging in the partitions, I found that on my distro (ubuntu server) `/dev/mmcblk0p13` contains Risc-V code that sets `mcountinhibit`.
+
+Luckily, all places where it is set, had the following pattern:
+
+```asm
+4 bytes setting a5       # XXXXXXXX
+csrw	mcountinhibit,a5 # 73900732
+```
+
+So using the following worked in for me:
+
+```sh
+dd if=/dev/mmcblk0p13 of=./bin status=progress
+xxd -p -c 10000 ./bin | sed 's/........73900732/8147814773900732/g' | xxd -p -r > tmp
+dd if=./mod of=/dev/mmcblk0p13 status=progress
 ```
