@@ -164,7 +164,13 @@ Luckily, all places where it is set, had the following pattern:
 csrw	mcountinhibit,a5 # 73900732
 ```
 
-So using the following worked in for me:
+So we want to replace the bytes that set a5 with the following:
+
+```asm
+li	a5, 0 # 8147
+```
+
+The substitution can be done as follows:
 
 ```sh
 dd if=/dev/mmcblk0p13 of=./bin status=progress
