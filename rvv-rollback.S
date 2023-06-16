@@ -1,4 +1,4 @@
-# bench.h -- A minimal benchmarking library
+# rvv-rollback.S -- A minimal benchmarking library
 # Olaf Bernstein <camel-cdr@protonmail.com>
 # Distributed under the MIT license, see license at the end of the file.
 # New versions available at https://gist.github.com/camel-cdr/cfd9ba2b8754b521edf4892fe19c7031
