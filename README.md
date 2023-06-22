@@ -167,13 +167,13 @@ csrw	mcountinhibit,a5 # 73900732
 So we want to replace the bytes that set a5 with the following:
 
 ```asm
-li	a5, 0 # 8147
+li	a5,-8 # e157
 ```
 
 The substitution can be done as follows:
 
 ```sh
 dd if=/dev/mmcblk0p13 of=./bin status=progress
-xxd -p -c 10000 ./bin | sed 's/........73900732/8147814773900732/g' | xxd -p -r > tmp
-dd if=./mod of=/dev/mmcblk0p13 status=progress
+xxd -p -c 10000 ./bin | sed 's/........73900732/e157e15773900732/g' | xxd -p -r > /tmp/tmp
+dd if=/tmp/tmp of=/dev/mmcblk0p13 status=progress
 ```
