@@ -152,6 +152,17 @@ I used the following to verify that everything was replaced correctly:
 dhex /boot/vmlinuz-5.19.0-1009-allwinner*
 ```
 
+### substitutions for other kernels
+
+#### 5.17: 
+
+```sh
+sed '0,/23b0f41023b0340123b82401a2700274e2644269a26945618280930700022330f510cdb7/s//37678001d98f23b0f41023b0340123b82401a2700274e2644269a2694561828001000100/'
+```
+
+
+
+
 ## Extra, enable `rdcycle`
 
 For some reason, `rdcycle` always returned the same value for me, so after reading up on it, I came to the conclusion that `mcountinhibit` probably disables it.
